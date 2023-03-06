@@ -39,15 +39,15 @@ public class ReservationHistViewHandler {
 
 
     @StreamListener(KafkaProcessor.INPUT)
-    public void when_then_UPDATE_(@Payload  ) {
+    public void whenMileageincreased_then_UPDATE_1(@Payload Mileageincreased mileageincreased) {
         try {
-            if (!.validate()) return;
+            if (!mileageincreased.validate()) return;
                 // view 객체 조회
 
-                List<ReservationHist> reservationHistList = reservationHistRepository.findBy();
+                List<ReservationHist> reservationHistList = reservationHistRepository.findByCustomerId(mileageincreased.getId());
                 for(ReservationHist reservationHist : reservationHistList){
                     // view 객체에 이벤트의 eventDirectValue 를 set 함
-                    reservationHist.set();
+                    reservationHist.setMilieage(mileageincreased.getMileage());
                 // view 레파지 토리에 save
                 reservationHistRepository.save(reservationHist);
                 }
@@ -56,23 +56,13 @@ public class ReservationHistViewHandler {
             e.printStackTrace();
         }
     }
+
     @StreamListener(KafkaProcessor.INPUT)
-    public void whenReservationCancelled_then_UPDATE_2(@Payload ReservationCancelled reservationCancelled) {
+    public void whenReservationCancelled_then_DELETE_1(@Payload ReservationCancelled reservationCancelled) {
         try {
             if (!reservationCancelled.validate()) return;
-                // view 객체 조회
-
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-
-    @StreamListener(KafkaProcessor.INPUT)
-    public void when_then_DELETE_(@Payload  ) {
-        try {
-            if (!.validate()) return;
             // view 레파지 토리에 삭제 쿼리
-            reservationHistRepository.deleteBy();
+            reservationHistRepository.deleteByCustomerId(reservationCancelled.getCustomerId());
         }catch (Exception e){
             e.printStackTrace();
         }
