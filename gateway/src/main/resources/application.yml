@@ -1,0 +1,90 @@
+server:
+  port: 8088
+
+---
+
+spring:
+  profiles: default
+  cloud:
+    gateway:
+      routes:
+        - id: schedulemgmt
+          uri: http://localhost:8081
+          predicates:
+            - Path=/schedules/**, 
+        - id: customermgmt
+          uri: http://localhost:8082
+          predicates:
+            - Path=/mileages/**, 
+        - id: reservationmgmt
+          uri: http://localhost:8083
+          predicates:
+            - Path=/reservations/**, 
+        - id: notimgmt
+          uri: http://localhost:8084
+          predicates:
+            - Path=/notifications/**, 
+        - id: reservationhist
+          uri: http://localhost:8085
+          predicates:
+            - Path=, /reservationHists/**
+        - id: frontend
+          uri: http://localhost:8080
+          predicates:
+            - Path=/**
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "*"
+            allowedMethods:
+              - "*"
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
+
+
+---
+
+spring:
+  profiles: docker
+  cloud:
+    gateway:
+      routes:
+        - id: schedulemgmt
+          uri: http://schedulemgmt:8080
+          predicates:
+            - Path=/schedules/**, 
+        - id: customermgmt
+          uri: http://customermgmt:8080
+          predicates:
+            - Path=/mileages/**, 
+        - id: reservationmgmt
+          uri: http://reservationmgmt:8080
+          predicates:
+            - Path=/reservations/**, 
+        - id: notimgmt
+          uri: http://notimgmt:8080
+          predicates:
+            - Path=/notifications/**, 
+        - id: reservationhist
+          uri: http://reservationhist:8080
+          predicates:
+            - Path=, /reservationHists/**
+        - id: frontend
+          uri: http://frontend:8080
+          predicates:
+            - Path=/**
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "*"
+            allowedMethods:
+              - "*"
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
+
+server:
+  port: 8080
